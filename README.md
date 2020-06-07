@@ -1,5 +1,6 @@
-Run docker 
+Run  
 
-_cp $container_id:/python-test/reports/result.xml ~/ && docker cp e8072abeb5ba:/python-test/test_jar_output.log ~/_ 
+_mkdir ~/test_task_reports_
+_docker cp $CONTAINER_ID:/reports ~/test_task_reports_ 
 
-to copy the test results into your home directory
+to copy the test results into your host machine

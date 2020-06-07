@@ -1,5 +1,9 @@
+# Python part
 FROM python:3.7.7-alpine AS base
 MAINTAINER FedorD fedord.qa@gmail.com
+
+# Create folder for reports
+RUN mkdir /reports
 
 # Set WORKDIR
 WORKDIR /python-test
@@ -11,15 +15,18 @@ COPY . .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Run pytest and generate report
-RUN ["pytest", "-v", "--junitxml=reports/result.xml"]
+# Always return exit code as 0 to avoid container build interruption
+RUN pytest -v --junitxml=/reports/python_tests_result.xml; exit 0
 
+
+# Java part
 FROM java:8-jdk-alpine
 
 # Create folder for reports
-RUN mkdir reports
+RUN mkdir /reports
 
-# Copy python test result from base
-COPY --from=base /python-test/reports/result.xml /reports
+# Copy python tests result from base
+COPY --from=base /reports/python_tests_result.xml /reports
 
 # Go to java test directory and prepare test
 WORKDIR /java-test
